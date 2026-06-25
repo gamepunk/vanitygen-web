@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Create standalone package
+        run: |
+          mkdir -p vanitygen-web-${GITHUB_REF_NAME}
+          cp index.html README.md LICENSE vanitygen-web-${GITHUB_REF_NAME}/
+          cp -r dist vanitygen-web-${GITHUB_REF_NAME}/
+          zip -r vanitygen-web-${GITHUB_REF_NAME}.zip vanitygen-web-${GITHUB_REF_NAME}/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "vanitygen-web ${{ github.ref_name }}"
+          body: |
+            ## vanitygen-web ${{ github.ref_name }}
+
+            ### 📦 Downloads
+
+            - **Source code** — available as tarball/zip below
+            - **Pre-built package** (`vanitygen-web-${{ github.ref_name }}.zip`) — download, unzip, and open `index.html` in any browser. No build step needed.
+
+            ### ⚡ Usage
+
+            ```bash
+            # Unzip and open directly
+            unzip vanitygen-web-${{ github.ref_name }}.zip
+            cd vanitygen-web-${{ github.ref_name }}
+            open index.html
+            ```
+          files: vanitygen-web-${{ github.ref_name }}.zip
