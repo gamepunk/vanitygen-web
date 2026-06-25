@@ -8,7 +8,7 @@ import { sha256 } from "@noble/hashes/sha256";
 import { ripemd160 } from "@noble/hashes/ripemd160";
 import { base58, base58check, bech32, bech32m } from "@scure/base";
 import { secp256k1 as secp } from "@noble/curves/secp256k1";
-import { AddressType, MatchMode, fromHex, type FoundResult, deriveAddress, toHex, privateKeyToMnemonic } from "./address";
+import { AddressType, MatchMode, fromHex, type FoundResult, deriveAddress, toHex, privateKeyToMnemonic, selfTest } from "./address";
 import { t, switchLang, currentLang } from "./i18n";
 import { showPrompt, showAlert } from "./modal";
 import { generateEncryptedKey, decryptFile } from "./crypto";
@@ -67,6 +67,14 @@ function applyI18n() {
 window.addEventListener("langchange", applyI18n);
 applyI18n();
 
+// ── Startup self-test ───────────────────────────────────────────────────
+try {
+  selfTest();
+} catch (e) {
+  console.error(e);
+  statusEl.textContent = `Self-test failed: ${(e as Error).message}`;
+}
+
 const langSelect = document.getElementById("langSelect") as HTMLSelectElement;
 if (langSelect) {
   langSelect.value = currentLang();
@@ -79,6 +87,8 @@ function updateToggleText() {
 }
 window.addEventListener("langchange", updateToggleText);
 updateToggleText();
+// Initialize words dropdown disabled state
+wordsSelect.disabled = !showMnemonicBtn.classList.contains("active");
 
 // ── Config ──────────────────────────────────────────────────────────────
 
@@ -368,7 +378,10 @@ function toggleBtn(btn: HTMLButtonElement, keyOn: string, keyOff: string) {
   btn.textContent = btn.classList.contains("active") ? t(keyOn) : t(keyOff);
 }
 caseInsensitiveBtn.addEventListener("click", () => toggleBtn(caseInsensitiveBtn, "caseSensitive", "caseInsensitive"));
-showMnemonicBtn.addEventListener("click", () => toggleBtn(showMnemonicBtn, "showMnemonicOn", "showMnemonicOff"));
+showMnemonicBtn.addEventListener("click", () => {
+  toggleBtn(showMnemonicBtn, "showMnemonicOn", "showMnemonicOff");
+  wordsSelect.disabled = !showMnemonicBtn.classList.contains("active");
+});
 
 // ── Encrypt / export ────────────────────────────────────────────────────
 

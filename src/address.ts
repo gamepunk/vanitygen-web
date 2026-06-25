@@ -236,6 +236,32 @@ export async function mnemonicToSeedWebcrypto(mnemonic: string): Promise<Uint8Ar
   return fn(mnemonic);
 }
 
+// ── Self-test ────────────────────────────────────────────────────────────
+
+const SELF_TEST_VECTORS: [AddressType, string][] = [
+  [AddressType.Legacy, "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH"],
+  [AddressType.P2sh, "3JvL6Ymt8MVWiCNHC7oWU6nLeHNJKLZGLN"],
+  [AddressType.Segwit, "bc1qmp7vyh2e3d79v5s2qgl46hkj9xz7y3sr6a6s5v"],
+  [AddressType.Taproot, "bc1px7lfq0pxw4p4l7kvnhh6t7qltxc34rt6q7cpq0rqhhlt5gqacz2qw3n0a0"],
+];
+
+/** Run startup self-test using the well-known test vector (secret key = 1).
+ *  Throws on failure, ensuring the derivation pipeline is correct before any
+ *  search begins. */
+export function selfTest(): void {
+  const privKey = new Uint8Array(32);
+  privKey[31] = 1; // secret key = 1
+
+  for (const [type, expected] of SELF_TEST_VECTORS) {
+    const addr = deriveAddress(privKey, type);
+    if (addr !== expected) {
+      throw new Error(
+        `Self-test failed for ${type}: expected "${expected}", got "${addr}"`
+      );
+    }
+  }
+}
+
 /**
  * Derive a BIP32 master private key from a seed.
  * This is the standard BIP32 master key derivation (HMAC-SHA512).

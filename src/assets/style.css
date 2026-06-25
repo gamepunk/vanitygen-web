@@ -158,6 +158,10 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-light);
 }
+select:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
 input[type="text"]::placeholder { color: var(--text-muted); }
 
 #pattern {
