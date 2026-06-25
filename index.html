@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="title">Vanitygen — Bitcoin Vanity Address Generator</title>
+  <link rel="shortcut icon" href="src/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="src/logo_ios.png"/>
+  <style media="print">
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+    .no-print { display: none !important; }
+  </style>
+</head>
+<body>
+  <!-- GitHub corner -->
+  <a href="https://github.com/gamepunk/vanitygen-web" target="_blank" rel="noopener" class="github-corner no-print" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true">
+      <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+      <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin:130px 106px;" class="octo-arm"></path>
+      <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.4,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+    </svg>
+  </a>
+
+  <div class="container">
+
+    <!-- ══ Top bar: logo/title + language switch ══ -->
+    <div class="topbar no-print">
+      <div class="header-left">
+        <div class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" viewBox="0 0 78.23626708984375 78.24539947509766"><g transform="matrix(0.6112921833992004,0,0,0.6112921833992004,0,0)"><path d="M126.06964,79.482376C117.52172,113.76803,82.796089,134.63383,48.506432,126.08392C14.230782,117.536,-6.6350031,82.80835,1.9169116,48.5247C10.460831,14.235047,45.186459,-6.6327453,79.46611,1.9151722C113.75375,10.46309,134.61752,45.194733,126.06964,79.482376Z" fill="#F7931A" fill-opacity="1"/><path d="M92.19998946801758,54.882637170166014C93.47396046801758,46.366716170166015,86.99005146801758,41.78877617016602,78.12414146801757,38.734798170166016L81.00012246801758,27.198913070166014L73.97819146801757,25.448930970166018L71.17823046801757,36.68081817016601C69.33224146801757,36.22082417016601,67.43626446801758,35.78683117016602,65.55228046801759,35.35683417016602L68.37225746801758,24.050950270166016L61.354326468017575,22.300968170166016L58.47636446801758,33.83284817016602C56.94836446801757,33.484852170166015,55.44837946801758,33.140854170166016,53.992401468017576,32.77885817016602L54.00039646801758,32.74285517016602L44.31650446801758,30.324880570166016L42.448512468017576,37.82480417016602C42.448512468017576,37.82480417016602,47.658451468017574,39.01879317016602,47.54846546801758,39.092789170166014C50.39243146801758,39.80278017016602,50.90643346801758,41.684757170166016,50.820436468017576,43.17674617016601L47.54446746801758,56.318611170166015C47.74048046801758,56.36861417016602,47.99447646801758,56.440605170166016,48.27447146801758,56.552601170166014C48.04046646801758,56.494606170166016,47.79046846801758,56.43061017016601,47.53247446801758,56.368599170166014L42.940511468017576,74.77841617016603C42.592523468017575,75.64240217016601,41.71051346801758,76.93839617016602,39.72255706801758,76.44639617016603C39.792563468017576,76.54840117016602,34.618605368017576,75.17240917016602,34.618605368017576,75.17240917016602L31.132648468017578,83.21031917016602L40.27055546801758,85.48829617016602C41.97055046801758,85.914287170166,43.63651846801758,86.36027917016601,45.276516468017576,86.78029217016602L42.37054046801758,98.44817017016601L49.38447546801758,100.19815417016602L52.26243746801758,88.65426217016602C54.17840346801758,89.17426717016602,56.03840046801758,89.65425517016601,57.85838846801758,90.10624317016601L54.99040746801758,101.59613417016601L62.012338468017575,103.34611917016602L64.91831546801757,91.70023717016602C76.89219246801758,93.96622117016602,85.89609946801758,93.05222717016602,89.68606946801758,82.22233917016601C92.74002046801758,73.50242617016602,89.53406146801757,68.47248117016602,83.23413846801758,65.19251217016603C87.82210546801758,64.13452517016601,91.27806046801757,61.116550170166015,92.19998946801758,54.882637170166014ZM76.15614746801758,77.38040917016602C73.98615246801758,86.100323170166,59.304327468017576,81.38636417016602,54.54436646801758,80.20438417016601L58.40031446801758,64.74653617016602C63.160274468017576,65.93452417016601,78.42409946801757,68.28649117016602,76.15614746801758,77.38040917016602ZM78.32812146801757,54.75664517016602C76.34812946801758,62.68857217016602,64.12825346801758,58.65860017016602,60.164304468017576,57.670616170166014L63.66027046801758,43.65075717016602C67.62421846801757,44.63875417016602,80.39011046801758,46.48272917016602,78.32812146801757,54.75664517016602Z" fill="#FFFFFF" fill-opacity="1"/></g></svg>
+        </div>
+          <h1 data-i18n="title">Vanitygen</h1>
+      </div>
+      <div class="lang-bar">
+        <select id="langSelect" class="lang-select">
+          <option value="en">🇬🇧 English</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="el">🇬🇷 ελληνικά</option>
+          <option value="it">🇮🇹 italiano</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="cs">🇨🇿 Česky</option>
+          <option value="hu">🇭🇺 Magyar</option>
+          <option value="ja">🇯🇵 日本語</option>
+          <option value="zh-CN">🇨🇳 简体中文</option>
+          <option value="zh-TW">🇭🇰 繁体中文</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="pt">🇵🇹 português</option>
+        </select>
+      </div>
+    </div>
+    <p class="subtitle no-print" data-i18n="subtitle">Bitcoin vanity address generator — runs entirely in your browser</p>
+
+    <!-- ══ Section 1: 搜索 / Search ══ -->
+    <div class="section">
+      <div class="controls no-print">
+
+        <div>
+          <label class="ctrl-label" for="pattern" data-i18n="pattern">Pattern</label>
+          <input id="pattern" type="text" placeholder="e.g. 1Bit, bc1qninja, pizza$" autofocus maxlength="100" />
+        </div>
+
+        <div>
+          <label class="ctrl-label" data-i18n="caseLabel">Case</label>
+          <button id="caseInsensitiveBtn" class="toggle-btn">Case-insensitive</button>
+        </div>
+
+        <div>
+          <label class="ctrl-label" for="addressType" data-i18n="addressType">Address Type</label>
+          <select id="addressType">
+            <option value="legacy" data-i18n="legacy">Legacy (P2PKH)</option>
+            <option value="p2sh" data-i18n="p2sh">Nested SegWit (P2SH)</option>
+            <option value="segwit" data-i18n="segwit">Native SegWit (P2WPKH)</option>
+            <option value="taproot" data-i18n="taproot">Taproot (P2TR)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="ctrl-label" for="matchMode" data-i18n="matchMode">Match Mode</label>
+          <select id="matchMode">
+            <option value="prefix" data-i18n="prefix">Prefix</option>
+            <option value="suffix" data-i18n="suffix">Suffix</option>
+            <option value="anywhere" data-i18n="anywhere">Anywhere</option>
+            <option value="regex" data-i18n="regex">Regex</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="ctrl-label" for="count" data-i18n="count">Count</label>
+          <div class="stepper-wrap">
+            <button id="countDec" class="stepper-btn" tabindex="-1">−</button>
+            <input id="count" type="number" value="1" min="1" max="100" />
+            <button id="countInc" class="stepper-btn" tabindex="-1">+</button>
+          </div>
+        </div>
+
+        <div>
+        <label class="ctrl-label" for="threads" data-i18n="threads">Threads</label>
+        <div class="stepper-wrap">
+          <button id="threadDec" class="stepper-btn" tabindex="-1">−</button>
+          <input id="threads" type="number" min="1" max="32" value="4" />
+          <button id="threadInc" class="stepper-btn" tabindex="-1">+</button>
+        </div>
+        </div>
+
+        <div>
+          <label class="ctrl-label" data-i18n="showMnemonic">Show BIP39 mnemonic</label>
+          <button id="showMnemonicBtn" class="toggle-btn active">Show BIP39 mnemonic</button>
+        </div>
+
+        <div>
+          <label class="ctrl-label" for="words" data-i18n="words">Mnemonic Words</label>
+          <select id="words">
+            <option value="12">12</option>
+            <option value="15">15</option>
+            <option value="18">18</option>
+            <option value="21">21</option>
+            <option value="24" selected>24</option>
+          </select>
+        </div>
+
+        <div class="full-row btn-row">
+          <button id="startBtn" class="btn-start" data-i18n="start">Start Search</button>
+          <button id="stopBtn" class="btn-stop" disabled data-i18n="stop">Stop</button>
+        </div>
+
+      </div>
+    </div><!-- /.section (Controls) -->
+
+    <!-- ══ Section 2: 状态 & 结果 / Status & Results ══ -->
+    <div class="section" id="resultsSection" style="display:none">
+    <div class="results-panel no-print" id="resultsPanel">
+      <div class="status-bar no-print">
+        <span id="status">Ready</span>
+        <span id="progress"></span>
+      </div>
+      <div id="results">
+        <div class="empty-state no-print">
+          <div class="icon">₿</div>
+          <p data-i18n="emptyState">Enter a pattern and click Start to find your vanity address.</p>
+        </div>
+      </div>
+    </div>
+    </div><!-- /.section (Status & Results) -->
+
+    <!-- ══ Section 3: 安全 / Security ══ -->
+    <div class="section">
+      <div class="info-sections no-print">
+
+        <section class="info-section security-grid">
+          <div class="security-item">
+            <h4 data-i18n="secHow">How it works</h4>
+            <p data-i18n="secHowText">Your browser generates random private keys locally and derives Bitcoin addresses until it finds one matching your pattern. All computations happen entirely in your browser tab — nothing is sent over the network.</p>
+          </div>
+          <div class="security-item">
+            <h4 data-i18n="secOffline">100% Offline</h4>
+            <p data-i18n="secOfflineText">After the page loads, you can disconnect from the internet and continue using it seamlessly. You can also download the page and run it on an air-gapped computer for maximum security.</p>
+          </div>
+          <div class="security-item">
+            <h4 data-i18n="secOpenSource">Open Source</h4>
+            <p data-i18n="secOpenSourceText">The source code is fully available on GitHub for review. You can inspect exactly what the tool does before using it.</p>
+          </div>
+          <div class="security-item">
+            <h4 data-i18n="secRandom">Cryptographically Secure</h4>
+            <p data-i18n="secRandomText">Key generation uses the browser's built-in cryptographically secure pseudo-random number generator (CSPRNG) via crypto.getRandomValues().</p>
+          </div>
+        </section>
+
+        <section class="info-section disclaimer-section">
+          <h4 class="disclaimer-heading" data-i18n="disclaimerTitle">Disclaimer</h4>
+          <div class="info-content">
+            <p data-i18n="disclaimerText">This tool is provided as-is, without any warranty. You are solely responsible for the security of your private keys. Always verify generated addresses before use. The authors are not liable for any loss or damage arising from the use of this tool. For maximum security, generate keys on an offline, air-gapped computer.</p>
+          </div>
+        </section>
+
+      </div>
+    </div><!-- /.section (Security) -->
+
+    <!-- Footer -->
+    <div class="footer no-print">
+      <a href="https://github.com/gamepunk/vanitygen-web" target="_blank" rel="noopener" data-i18n="footerGitHub">GitHub</a>
+      <button id="decryptBtn" class="footer-btn" data-i18n="decryptBtn">Decrypt File</button>
+      <span data-i18n="footerDonate">Donate: bc1q... (coming soon)</span>
+    </div>
+    <input type="file" id="decryptInput" accept=".json" style="display:none" />
+
+  </div>
+
+  <!-- Print area (hidden on screen) -->
+  <div id="printArea" style="display:none"></div>
+
+  <!-- Modal overlay -->
+  <div id="modalOverlay" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div id="modalTitle" class="modal-title"></div>
+      <div id="modalBody" class="modal-body"></div>
+      <div class="modal-actions">
+        <button id="modalCancelBtn" class="modal-btn modal-btn-cancel"></button>
+        <button id="modalConfirmBtn" class="modal-btn modal-btn-confirm"></button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./dist/index.js"></script>
+  <link rel="stylesheet" href="./dist/index.css" />
+</body>
+</html>

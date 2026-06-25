@@ -1,0 +1,19 @@
+{
+  "name": "vanitygen",
+  "version": "0.1.0",
+  "description": "Bitcoin vanity address generator — browser edition",
+  "type": "module",
+  "scripts": {
+    "dev": "bun build ./src/index.ts --outdir ./dist --watch & bun build ./src/worker.ts --outdir ./dist --watch --target browser & wait",
+    "build": "bun build ./src/index.ts --outdir ./dist --minify && bun build ./src/worker.ts --outdir ./dist --minify --target browser",
+    "start": "bunx serve ."
+  },
+  "dependencies": {
+    "@noble/hashes": "1",
+    "@noble/secp256k1": "^2.2",
+    "@scure/base": "^2.2.0",
+    "@scure/bip39": "^2.2.0",
+    "bech32": "^2.0",
+    "bs58": "^6.0"
+  }
+}
