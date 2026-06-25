@@ -8,7 +8,7 @@ import { sha256 } from "@noble/hashes/sha256";
 import { ripemd160 } from "@noble/hashes/ripemd160";
 import { base58, base58check, bech32, bech32m } from "@scure/base";
 import { secp256k1 as secp } from "@noble/curves/secp256k1";
-import { AddressType, MatchMode, fromHex, type FoundResult, deriveAddress, toHex, privateKeyToMnemonic, selfTest } from "./address";
+import { AddressType, MatchMode, fromHex, type FoundResult, deriveAddress, toHex, privateKeyToMnemonic, selfTest, validatePrefix } from "./address";
 import { t, switchLang, currentLang } from "./i18n";
 import { showPrompt, showAlert } from "./modal";
 import { generateEncryptedKey, decryptFile } from "./crypto";
@@ -281,6 +281,14 @@ function handleFound(r: FoundResult, targetFound: number) {
 startBtn.addEventListener("click", () => {
   const config = getConfig();
   if (!config.pattern) { statusEl.textContent = t("enterPattern"); return; }
+
+  const validationError = validatePrefix(config.pattern, config.addressType as AddressType, config.caseInsensitive);
+  if (validationError) {
+    statusEl.textContent = `❌ ${validationError}`;
+    progressBar.classList.remove("active");
+    progressBar.style.display = "none";
+    return;
+  }
 
   const rs = document.getElementById("resultsSection");
   if (rs) rs.style.display = "";

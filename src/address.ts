@@ -157,6 +157,40 @@ export function stripAddressPrefix(address: string, type: AddressType): string {
   return address;
 }
 
+// ── Prefix validation ──────────────────────────────────────────────────
+
+/** Base58 alphabet (no 0/O/I/l). */
+const BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+/** Bech32/Bech32m data-part alphabet (BIP-173). */
+const BECH32_CHARS = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+
+const ADDR_ALPHABETS: Record<string, { name: string; chars: string; hint: string }> = {
+  legacy:  { name: "Base58",  chars: BASE58_CHARS, hint: "禁止字符: 0, O, I, l" },
+  p2sh:    { name: "Base58",  chars: BASE58_CHARS, hint: "禁止字符: 0, O, I, l；第2位必须大写" },
+  segwit:  { name: "Bech32",  chars: BECH32_CHARS, hint: "可用字符: qpzry9x8gf2tvdw0s3jn54khce6mua7l（注意没有 b/i/o/1）" },
+  taproot: { name: "Bech32m", chars: BECH32_CHARS, hint: "可用字符: qpzry9x8gf2tvdw0s3jn54khce6mua7l（注意没有 b/i/o/1）" },
+};
+
+/**
+ * Validate that a prefix pattern contains only characters valid for the
+ * given address type.  Returns `null` when the pattern is valid, or an
+ * error message string otherwise.
+ */
+export function validatePrefix(pattern: string, addressType: AddressType, caseInsensitive?: boolean): string | null {
+  const info = ADDR_ALPHABETS[addressType];
+  const check = caseInsensitive ? pattern.toLowerCase() : pattern;
+
+  for (let i = 0; i < check.length; i++) {
+    const c = check[i];
+    if (!info.chars.includes(c)) {
+      const label = { legacy: "Legacy (P2PKH)", p2sh: "P2SH", segwit: "SegWit (P2WPKH)", taproot: "Taproot (P2TR)" }[addressType];
+      return `字符 '${pattern[i]}' 不适用于 ${label} 地址。${info.hint}`;
+    }
+  }
+  return null;
+}
+
 export function isMatch(
   address: string,
   pattern: string,
