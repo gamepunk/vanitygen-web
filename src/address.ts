@@ -2,14 +2,14 @@
  * Bitcoin address derivation for vanitygen-web.
  *
  * Uses audited pure-JS libraries:
- * - @noble/secp256k1  — elliptic curve operations
+ * - @noble/curves/secp256k1  — elliptic curve operations
  * - @noble/hashes     — SHA-256, RIPEMD-160
  * - @scure/base       — Base58Check, Bech32, Bech32m
  *
  * No WASM, no native bindings, no bitcoinjs-lib.
  */
 
-import * as secp from "@noble/secp256k1";
+import { secp256k1 as secp } from "@noble/curves/secp256k1";
 import { sha256 } from "@noble/hashes/sha256";
 import { ripemd160 } from "@noble/hashes/ripemd160";
 import { base58, base58check, bech32, bech32m } from "@scure/base";
@@ -141,21 +141,40 @@ export function toWif(privKey: Uint8Array): string {
 // ---------------------------------------------------------------------------
 
 /** Check if an address matches the given pattern and mode. */
+export function addressTypePrefix(type: AddressType): string {
+  switch (type) {
+    case AddressType.Legacy: return "1";
+    case AddressType.P2sh: return "3";
+    case AddressType.Segwit: return "bc1q";
+    case AddressType.Taproot: return "bc1p";
+  }
+}
+
+export function stripAddressPrefix(address: string, type: AddressType): string {
+  const prefix = addressTypePrefix(type);
+  // The prefix might vary in length; just remove it if present
+  if (address.startsWith(prefix)) return address.slice(prefix.length);
+  return address;
+}
+
 export function isMatch(
   address: string,
   pattern: string,
   mode: MatchMode,
   caseInsensitive: boolean,
+  addressType?: AddressType,
   regex?: RegExp,
 ): boolean {
-  const s = caseInsensitive ? address.toLowerCase() : address;
+  let s = addressType ? stripAddressPrefix(address, addressType) : address;
+  if (caseInsensitive) s = s.toLowerCase();
+  const cmpPat = caseInsensitive ? pattern.toLowerCase() : pattern;
   switch (mode) {
     case MatchMode.Prefix:
-      return s.startsWith(pattern);
+      return s.startsWith(cmpPat);
     case MatchMode.Suffix:
-      return s.endsWith(pattern);
+      return s.endsWith(cmpPat);
     case MatchMode.Anywhere:
-      return s.includes(pattern);
+      return s.includes(cmpPat);
     case MatchMode.Regex:
       return regex?.test(address) ?? false;
   }

@@ -9,8 +9,8 @@
     "start": "bunx serve ."
   },
   "dependencies": {
+    "@noble/curves": "1",
     "@noble/hashes": "1",
-    "@noble/secp256k1": "^2.2",
     "@scure/base": "^2.2.0",
     "@scure/bip39": "^2.2.0",
     "bech32": "^2.0",

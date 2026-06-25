@@ -16,6 +16,7 @@ const LANGUAGES: Record<string, Record<string, string>> = {
 
     // Controls
     pattern: "Pattern",
+    patternPlaceholder: "e.g. Bit, ninja, pizza$",
     addressType: "Address Type",
     matchMode: "Match Mode",
     count: "Count",
@@ -97,9 +98,18 @@ const LANGUAGES: Record<string, Record<string, string>> = {
     secOpenSource: "Open Source",
     secOpenSourceText: "The source code is fully available on GitHub for review. You can inspect exactly what the tool does before using it.",
     secRandom: "Cryptographically Secure",
+    secHowLink: "Learn more →",
+    secOfflineLink: "Download →",
+    secSourceLink: "View on GitHub →",
+    secRandomLink: "MDN reference →",
     secRandomText: "Key generation uses the browser's built-in cryptographically secure pseudo-random number generator (CSPRNG) via crypto.getRandomValues().",
     disclaimerTitle: "Disclaimer",
     disclaimerText: "This tool is provided as-is, without any warranty. You are solely responsible for the security of your private keys. Always verify generated addresses before use. The authors are not liable for any loss or damage arising from the use of this tool. For maximum security, generate keys on an offline, air-gapped computer.",
+
+    // CLI
+    cliTitle: "Rust CLI Version",
+    cliText: "For maximum performance, check out the native Rust CLI version. It generates vanity addresses 10–100× faster by using optimized native cryptography.",
+    cliLink: "View on GitHub →",
   },
 
   "es": { lang: "Español" },
@@ -120,6 +130,7 @@ const LANGUAGES: Record<string, Record<string, string>> = {
     subtitle: "比特币虚荣地址生成器 — 完全在浏览器中运行",
 
     pattern: "模式",
+    patternPlaceholder: "例如 Bit, ninja, pizza$",
     addressType: "地址类型",
     matchMode: "匹配模式",
     count: "数量",
@@ -185,6 +196,7 @@ const LANGUAGES: Record<string, Record<string, string>> = {
     // Footer
     footerDonate: "捐赠: bc1q... (即将上线)",
     footerGitHub: "GitHub",
+    footerCLI: "CLI 版本 →",
 
     // Security & Disclaimer
     secTitle: "安全性",
@@ -195,9 +207,18 @@ const LANGUAGES: Record<string, Record<string, string>> = {
     secOpenSource: "开源代码",
     secOpenSourceText: "源代码完全在 GitHub 上公开，可供审查。您可以在使用前完整检查工具的行为。",
     secRandom: "密码安全",
+    secHowLink: "了解更多 →",
+    secOfflineLink: "下载页面 →",
+    secSourceLink: "查看源码 →",
+    secRandomLink: "MDN 参考 →",
     secRandomText: "密钥生成使用浏览器内置的密码学安全伪随机数生成器（CSPRNG），通过 crypto.getRandomValues() 实现。",
     disclaimerTitle: "免责声明",
     disclaimerText: "本工具按「原样」提供，不附带任何担保。您对自己的私钥安全负全部责任。使用前请务必验证生成的地址。作者不对因使用本工具造成的任何损失或损害承担责任。为获得最高安全性，请在离线的、不联网的计算机上生成密钥。",
+
+    // CLI
+    cliTitle: "Rust CLI 版本",
+    cliText: "追求极致性能？试试原生 Rust CLI 版本。它使用优化的本地密码学库，生成速度比浏览器版快 10~100 倍。",
+    cliLink: "查看源码 →",
   },
 };
 

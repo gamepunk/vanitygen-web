@@ -7,7 +7,7 @@ import "./assets/style.css";
 import { sha256 } from "@noble/hashes/sha256";
 import { ripemd160 } from "@noble/hashes/ripemd160";
 import { base58, base58check, bech32, bech32m } from "@scure/base";
-import * as secp from "@noble/secp256k1";
+import { secp256k1 as secp } from "@noble/curves/secp256k1";
 import { AddressType, MatchMode, fromHex, type FoundResult, deriveAddress, toHex, privateKeyToMnemonic } from "./address";
 import { t, switchLang, currentLang } from "./i18n";
 import { showPrompt, showAlert } from "./modal";
@@ -62,7 +62,7 @@ function applyI18n() {
   });
   document.title = t("title");
   const pat = document.getElementById("pattern") as HTMLInputElement;
-  if (pat) pat.placeholder = t("pattern");
+  if (pat) pat.placeholder = t("patternPlaceholder");
 }
 window.addEventListener("langchange", applyI18n);
 applyI18n();
@@ -98,6 +98,17 @@ function getConfig() {
     threads: parseInt(threadsInput.value, 10) || defaultThreads,
   };
 }
+
+// ── Prefix display ──────────────────────────────────────────────────────
+
+const prefixDisplay = document.getElementById("prefixDisplay") as HTMLInputElement;
+const ADDR_PREFIXES: Record<string, string> = { legacy: "1", p2sh: "3", segwit: "bc1q", taproot: "bc1p" };
+
+function updatePrefix() {
+  prefixDisplay.value = ADDR_PREFIXES[addressTypeSelect.value] || "";
+}
+addressTypeSelect.addEventListener("change", updatePrefix);
+updatePrefix();
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
@@ -194,7 +205,11 @@ function runInlineSearch(
         case AddressType.Taproot: addr = bech32m.encode("bc", bech32m.toWords(new Uint8Array([1, ...pub.subarray(1)])), 90); break;
       }
       attempts++;
-      const s = caseInsensitive ? addr.toLowerCase() : addr;
+      // Strip address-type prefix before matching
+      let matchAddr = addr;
+      const pfx = ADDR_PREFIXES[addressType];
+      if (pfx && matchAddr.startsWith(pfx)) matchAddr = matchAddr.slice(pfx.length);
+      const s = caseInsensitive ? matchAddr.toLowerCase() : matchAddr;
       let match = false;
       if (matchMode === MatchMode.Prefix) match = s.startsWith(cmpPat);
       else if (matchMode === MatchMode.Suffix) match = s.endsWith(cmpPat);
@@ -422,5 +437,17 @@ decryptInput.addEventListener("change", async () => {
     await showAlert(msg, wif);
   } catch {
     await showAlert(t("decryptError"));
+  }
+});
+
+// ── Close buttons ───────────────────────────────────────────────────────
+
+document.addEventListener("click", (e) => {
+  const btn = (e.target as HTMLElement).closest(".close-btn") as HTMLButtonElement | null;
+  if (!btn) return;
+  const targetId = btn.dataset.target;
+  if (targetId) {
+    const el = document.getElementById(targetId);
+    if (el) el.style.display = "none";
   }
 });

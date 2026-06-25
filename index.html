@@ -59,7 +59,10 @@
 
         <div>
           <label class="ctrl-label" for="pattern" data-i18n="pattern">Pattern</label>
-          <input id="pattern" type="text" placeholder="e.g. 1Bit, bc1qninja, pizza$" autofocus maxlength="100" />
+          <div class="pattern-wrap">
+            <input id="prefixDisplay" class="prefix-display" type="text" readonly value="1" />
+            <input id="pattern" type="text" placeholder="e.g. Bit, ninja, pizza$" autofocus maxlength="100" />
+          </div>
         </div>
 
         <div>
@@ -154,23 +157,27 @@
           <div class="security-item">
             <h4 data-i18n="secHow">How it works</h4>
             <p data-i18n="secHowText">Your browser generates random private keys locally and derives Bitcoin addresses until it finds one matching your pattern. All computations happen entirely in your browser tab — nothing is sent over the network.</p>
+            <a href="https://en.wikipedia.org/wiki/Vanity_address" target="_blank" rel="noopener" class="sec-link" data-i18n="secHowLink">Learn more →</a>
           </div>
           <div class="security-item">
             <h4 data-i18n="secOffline">100% Offline</h4>
             <p data-i18n="secOfflineText">After the page loads, you can disconnect from the internet and continue using it seamlessly. You can also download the page and run it on an air-gapped computer for maximum security.</p>
+            <a href="https://github.com/gamepunk/vanitygen-web" target="_blank" rel="noopener" class="sec-link" data-i18n="secOfflineLink">Download →</a>
           </div>
           <div class="security-item">
             <h4 data-i18n="secOpenSource">Open Source</h4>
             <p data-i18n="secOpenSourceText">The source code is fully available on GitHub for review. You can inspect exactly what the tool does before using it.</p>
+            <a href="https://github.com/gamepunk/vanitygen-web" target="_blank" rel="noopener" class="sec-link" data-i18n="secSourceLink">View on GitHub →</a>
           </div>
           <div class="security-item">
             <h4 data-i18n="secRandom">Cryptographically Secure</h4>
             <p data-i18n="secRandomText">Key generation uses the browser's built-in cryptographically secure pseudo-random number generator (CSPRNG) via crypto.getRandomValues().</p>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues" target="_blank" rel="noopener" class="sec-link" data-i18n="secRandomLink">MDN reference →</a>
           </div>
         </section>
 
-        <section class="info-section disclaimer-section">
-          <h4 class="disclaimer-heading" data-i18n="disclaimerTitle">Disclaimer</h4>
+        <section class="info-section disclaimer-section" id="disclaimerSection">
+          <h4 class="disclaimer-heading"><span data-i18n="disclaimerTitle">Disclaimer</span> <button class="close-btn" data-target="disclaimerSection" aria-label="Close">✕</button></h4>
           <div class="info-content">
             <p data-i18n="disclaimerText">This tool is provided as-is, without any warranty. You are solely responsible for the security of your private keys. Always verify generated addresses before use. The authors are not liable for any loss or damage arising from the use of this tool. For maximum security, generate keys on an offline, air-gapped computer.</p>
           </div>
@@ -179,9 +186,22 @@
       </div>
     </div><!-- /.section (Security) -->
 
+    <!-- ══ Section 4: Rust CLI ══ -->
+    <div class="section">
+      <div class="info-sections no-print">
+        <section class="info-section cli-section" id="cliSection">
+          <h4 class="cli-heading"><span data-i18n="cliTitle">Rust CLI Version</span> <button class="close-btn" data-target="cliSection" aria-label="Close">✕</button></h4>
+          <div class="info-content">
+            <p data-i18n="cliText">For maximum performance, check out the native Rust CLI version. It generates vanity addresses 10–100× faster by using optimized native cryptography.</p>
+            <a href="https://github.com/gamepunk/vanitygen" target="_blank" rel="noopener" class="sec-link" data-i18n="cliLink">View on GitHub →</a>
+          </div>
+        </section>
+      </div>
+    </div><!-- /.section (Rust CLI) -->
+
     <!-- Footer -->
     <div class="footer no-print">
-      <a href="https://github.com/gamepunk/vanitygen-web" target="_blank" rel="noopener" data-i18n="footerGitHub">GitHub</a>
+      <a href="https://github.com/gamepunk/vanitygen-web" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="16" height="16" fill="currentColor" style="vertical-align:-3px;margin-right:4px"><path d="M64,0C28.639999,0,0,28.639999,0,64C0,92.32,18.32,116.24,43.759998,124.72C46.959999,125.28,48.16,123.36,48.16,121.68C48.16,120.16,48.080002,115.12,48.080002,109.76C32,112.72,27.84,105.84,26.559999,102.24C25.84,100.4,22.719999,94.720001,20,93.199997C17.76,92,14.56,89.040001,19.92,88.959999C24.959999,88.879997,28.559999,93.599998,29.76,95.519997C35.52,105.2,44.720001,102.48,48.400002,100.8C48.959999,96.639999,50.639999,93.839996,52.48,92.239998C38.240002,90.639999,23.360001,85.120003,23.360001,60.639999C23.360001,53.68,25.84,47.919998,29.92,43.439999C29.280001,41.84,27.040001,35.279999,30.559999,26.48C30.559999,26.48,35.919998,24.799999,48.16,33.040001C53.279999,31.6,58.720001,30.879999,64.160004,30.879999C69.599998,30.879999,75.040001,31.6,80.160004,33.040001C92.400002,24.719999,97.760002,26.48,97.760002,26.48C101.28,35.279999,99.040001,41.84,98.400002,43.439999C102.48,47.919998,104.96,53.599998,104.96,60.639999C104.96,85.199997,90,90.639999,75.760002,92.239998C78.080002,94.239998,80.080002,98.080002,80.080002,104.08C80.080002,112.64,80,119.52,80,121.68C80,123.36,81.199997,125.36,84.400002,124.72C109.68,116.24,128,92.239998,128,64C128,28.639999,99.360001,0,64,0Z" fill-rule="evenodd"/></svg><span data-i18n="footerGitHub">GitHub</span></a>
       <button id="decryptBtn" class="footer-btn" data-i18n="decryptBtn">Decrypt File</button>
       <span data-i18n="footerDonate">Donate: bc1q... (coming soon)</span>
     </div>

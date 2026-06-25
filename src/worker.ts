@@ -8,7 +8,7 @@
 import { sha256 } from "@noble/hashes/sha256";
 import { ripemd160 } from "@noble/hashes/ripemd160";
 import { base58check, base58, bech32, bech32m } from "@scure/base";
-import * as secp from "@noble/secp256k1";
+import { secp256k1 as secp } from "@noble/curves/secp256k1";
 
 // ── Constants ──────────────────────────────────────────────────────────
 
@@ -69,14 +69,28 @@ function toWif(privKey: Uint8Array): string {
   return base58.encode(Uint8Array.from([...payload, ...checksum]));
 }
 
+// ── Address-type prefixes ──────────────────────────────────────────────
+
+const ADDR_PREFIXES: Record<string, string> = {
+  legacy: "1", p2sh: "3", segwit: "bc1q", taproot: "bc1p",
+};
+
+function stripPrefix(addr: string, addrType: string): string {
+  const pfx = ADDR_PREFIXES[addrType];
+  if (pfx && addr.startsWith(pfx)) return addr.slice(pfx.length);
+  return addr;
+}
+
 // ── Matching ───────────────────────────────────────────────────────────
 
-function isMatch(addr: string, pattern: string, mode: string, ci: boolean, regex?: RegExp): boolean {
-  const s = ci ? addr.toLowerCase() : addr;
+function isMatch(addr: string, pattern: string, mode: string, ci: boolean, addrType?: string, regex?: RegExp): boolean {
+  let s = addrType ? stripPrefix(addr, addrType) : addr;
+  if (ci) s = s.toLowerCase();
+  const cmpPat = ci ? pattern.toLowerCase() : pattern;
   switch (mode) {
-    case "prefix":   return s.startsWith(pattern);
-    case "suffix":   return s.endsWith(pattern);
-    case "anywhere": return s.includes(pattern);
+    case "prefix":   return s.startsWith(cmpPat);
+    case "suffix":   return s.endsWith(cmpPat);
+    case "anywhere": return s.includes(cmpPat);
     case "regex":    return regex?.test(addr) ?? false;
     default:         return false;
   }
@@ -99,7 +113,7 @@ function search(config: any, signal: { aborted: boolean }) {
     const addr = deriveAddress(privKey, addressType);
     attempts++;
 
-    if (isMatch(addr, cmpPat, matchMode, caseInsensitive, regex)) {
+    if (isMatch(addr, cmpPat, matchMode, caseInsensitive, addressType, regex)) {
       found++;
       const elapsed = performance.now() - start;
       self.postMessage({

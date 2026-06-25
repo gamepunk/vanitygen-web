@@ -5,7 +5,7 @@
  * (setTimeout) so the UI stays responsive.
  */
 
-import * as secp from "@noble/secp256k1";
+import { secp256k1 as secp } from "@noble/curves/secp256k1";
 import {
   deriveAddress,
   isMatch,
@@ -69,7 +69,7 @@ export function search(
         const addr = deriveAddress(privKey, addressType);
         attempts++;
 
-        if (isMatch(addr, cmpPat, matchMode, caseInsensitive, regex)) {
+        if (isMatch(addr, cmpPat, matchMode, caseInsensitive, addressType, regex)) {
           const elapsedMs = performance.now() - startTime;
           onFound({
             address: addr,
