@@ -243,7 +243,7 @@ function updateProgress() {
 }
 
 function finishSearch() {
-  progressBar.classList.remove("active");
+  progressBar.style.display = "none";
   running = false;
   startBtn.disabled = false;
   stopBtn.disabled = true;
@@ -281,6 +281,7 @@ startBtn.addEventListener("click", () => {
   progressEl.textContent = "searching...";
   statusEl.textContent = "";
   progressBar.classList.add("active");
+  progressBar.style.display = "";
   startBtn.disabled = true;
   stopBtn.disabled = false;
   totalAttempts = 0;
@@ -335,7 +336,7 @@ stopBtn.addEventListener("click", () => {
   running = false;
   inlineAbort = true;
   stopAllWorkers();
-  progressBar.classList.remove("active");
+  progressBar.style.display = "none";
   startBtn.disabled = false;
   stopBtn.disabled = true;
   statusEl.textContent = t("stopped");

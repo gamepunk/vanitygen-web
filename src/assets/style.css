@@ -421,6 +421,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
   height: 3px;
   background: var(--border);
   overflow: hidden;
+  display: none;
 }
 .progress-bar-inner {
   height: 100%;
@@ -634,8 +635,9 @@ button:active:not(:disabled) { transform: translateY(1px); }
 }
 
 .disclaimer-section {
-  border-color: rgba(217,119,6,.35);
+  border-color: #d97706;
   background: var(--yellow-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 .disclaimer-heading {
   margin: 0;
@@ -655,6 +657,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
 .cli-section {
   border-color: var(--accent);
   background: var(--accent-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 .cli-heading {
   margin: 0;
