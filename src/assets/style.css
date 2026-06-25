@@ -395,6 +395,27 @@ button:active:not(:disabled) { transform: translateY(1px); }
   font-size: .8rem;
 }
 
+/* ── Progress bar ────────────────────────────────────── */
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  overflow: hidden;
+}
+.progress-bar-inner {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .5s ease;
+}
+.progress-bar.active .progress-bar-inner {
+  width: 100%;
+  animation: progressIndeterminate 1.5s ease-in-out infinite;
+}
+@keyframes progressIndeterminate {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 /* ── Results ─────────────────────────────────────────── */
 .result-card {
   border-bottom: 1px solid var(--border);
